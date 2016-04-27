@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Color Coordinator</string>
+    <string name="outfit">Outfit</string>
+    <string name="Back">backToMain</string>
+    <string name="backToMain">Back</string>
+    <string name="btnOptions">Options</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+</resources>
