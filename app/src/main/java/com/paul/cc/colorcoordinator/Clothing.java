@@ -74,12 +74,12 @@ public class Clothing {
             else if(color.getLuminance() >=75 && 220 < color.getHue() && color.getHue() < 255){
                 navy = true;
             }
-            if(color.getLuminance()<= 10){
+            if(color.getLuminance()<= 20){
                 add=false;
                 white = true;
                 continue;
             }
-            else if(color.getLuminance() >= 90){
+            else if(color.getLuminance() >= 80){
                 add=false;
                 black=true;
                 continue;

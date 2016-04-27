@@ -3,6 +3,8 @@ package com.paul.cc.colorcoordinator;
 
 import android.graphics.Bitmap;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Outfit {
 
@@ -60,6 +62,7 @@ public class Outfit {
     }
 
     public void findPrimaryHues(){
+        primaryHues.clear();
         for(HSLColor color : colors){
             boolean add = true;
             for(HSLColor c : primaryHues){
@@ -95,7 +98,12 @@ public class Outfit {
 
     public int findMatchRating(){
         updateFlags();
-        scheme = ColorScheme.findScheme(colors);
+        //Get rid of duplicates
+        Set<HSLColor> hs = new HashSet<HSLColor>();
+        hs.addAll(colors);
+        colors.clear();
+        colors.addAll(hs);
+        scheme = ColorScheme.findScheme(primaryHues);
         schemeName = scheme.getName();
         int base = 180;
         int score = 100;
@@ -117,18 +125,21 @@ public class Outfit {
         else if(schemeName == "Split Complementary"){
             for(int i = 0; i < colors.size()-1; i++){
                 int deg = (int) colors.get(i).getDegreesBetween(colors.get(i+1));
+                if(deg < 15){break;}
                 score -= Math.min(Math.abs(150 - deg), Math.abs(70 - deg));
             }
         }
         else if(schemeName == "Tetrad"){
             for(int i = 0; i < colors.size()-1; i++){
                 int deg = (int) colors.get(i).getDegreesBetween(colors.get(i+1));
+                if(deg < 15){break;}
                 score -= Math.min(Math.abs(base - deg),Math.abs(base*2 - deg));
             }
         }
         else{
             for(int i = 0; i < colors.size()-1; i++){
                 int deg = (int) colors.get(i).getDegreesBetween(colors.get(i+1));
+                if(deg < 15){break;}
                 score -= Math.abs(base - deg);
             }
         }

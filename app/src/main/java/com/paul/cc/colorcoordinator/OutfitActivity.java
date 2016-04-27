@@ -142,16 +142,56 @@ public class OutfitActivity extends AppCompatActivity {
 
             }
         });
+        Button buttonDelete = (Button) findViewById(R.id.btnDelete);
+        buttonDelete.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                stuff.clear();
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences.Editor mEditor = prefs.edit();
+                //mEditor.putInt("imageNumCount", 0).commit();
+                //SharedPreferences.Editor editor = prefs.edit();
+                // Gson gson = new Gson();
+                try {
+                    mEditor.putString("please","");
+                    mEditor.commit();
+                    //Toast.makeText(OutfitActivity.this, test, Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                outfit = new Outfit();
+                matchRating = 100;
+                imageNumber = 0;
+                mEditor = matchRatingPrefs.edit();
+                mEditor.putInt("matchNum", matchRating).commit();
+                mEditor = imagePrefs.edit();
+                mEditor.putInt("imageNumCount", imageNumber).commit();
+                TextView textView = (TextView) findViewById(R.id.matchRating);
+                textView.setText(String.valueOf("Match Rating: " + matchRating));
+                adapter.notifyDataSetChanged();
 
+            }
+        });
         matchRatingPrefs = getSharedPreferences("labelMatchRating", 0);
         matchRating  = imagePrefs.getInt("matchNum", 100);
         TextView textView = (TextView) findViewById(R.id.matchRating);
-        textView.setText(String.valueOf(matchRating));
+        textView.setText(String.valueOf("Match Rating: " + matchRating));
 
-        outfit = new Outfit();
-        for(clothingItem cloth : stuff){
-            addClothing(cloth.filepath);
-        }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        outfit = new Outfit();
+                        for(clothingItem cloth : stuff){
+                            addClothing(cloth.filepath);
+                        }
+                    }
+                });
+                }
+        }).start();
+
     /*
         clothingItem it1 = new clothingItem();
         it1.description= "Ben";
@@ -311,7 +351,7 @@ public class OutfitActivity extends AppCompatActivity {
 
         // Determine how much to scale down the image
         //int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-        int scaleFactor = Math.min(photoW/50, photoH/50);
+        int scaleFactor = Math.min(photoW / 50, photoH / 50);
 
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
@@ -325,7 +365,7 @@ public class OutfitActivity extends AppCompatActivity {
         mEditor.putInt("matchNum", matchRating).commit();
         Log.v("MATCHRATING!!!!!", String.valueOf(matchRating));
         TextView textView = (TextView) findViewById(R.id.matchRating);
-        textView.setText(String.valueOf(matchRating));
+        textView.setText(String.valueOf("Match Rating: " + matchRating));
 
     }
 /*

@@ -47,7 +47,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Delete"
+        android:text="Delete All"
         android:id="@+id/btnDelete"
         android:layout_alignParentTop="true"
         android:layout_alignRight="@+id/listView"
@@ -57,12 +57,12 @@
 
     <ListView
         android:layout_width="wrap_content"
-        android:layout_height="500px"
+        android:layout_height="200px"
         android:id="@+id/listView"
+        android:layout_below="@+id/btnDelete"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_below="@+id/btnDelete"
-        android:layout_alignParentBottom="true" />
+        android:layout_above="@+id/matchRating" />
 
     <Button
         android:layout_width="wrap_content"
@@ -78,14 +78,18 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity = "center"
         android:text="text"
         android:id="@+id/matchRating"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:textSize="40dp"
-        android:textIsSelectable="true" />/>
+        android:textIsSelectable="true"
+        android:textColor="@android:color/white"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" /><![CDATA[
+
+    />
 
 
 
+]]>
 </RelativeLayout>
