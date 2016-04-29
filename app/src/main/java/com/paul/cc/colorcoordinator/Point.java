@@ -1,5 +1,7 @@
 package com.paul.cc.colorcoordinator;
 
+
+//Point in 3d space intended for use with K-means clustering
 public class Point {
     public int clusterIndex = -1; //-1 means not part of a cluster yet
     public double x, y, z; //For use in this project, these will be rgb values

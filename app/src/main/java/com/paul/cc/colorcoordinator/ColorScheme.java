@@ -1,6 +1,11 @@
 package com.paul.cc.colorcoordinator;
 import java.util.ArrayList;
 
+/**
+ * ColorScheme class attempts to find the scheme of an image based on its comprising colors
+ */
+
+
 public class ColorScheme {
     public int complementary =0, analagous=0, triad=0, tetrad=0, split=0;
     public int numberColors;
@@ -10,6 +15,11 @@ public class ColorScheme {
     public ColorScheme(){
     }
 
+    /**
+     *
+     * @param schemes Potential schemes array calculated from findScheme()
+     * @param colors Colors scheme is comprised of
+     */
     public ColorScheme(ArrayList<String> schemes, ArrayList<HSLColor> colors){
 
         for(String s : schemes){
@@ -58,6 +68,11 @@ public class ColorScheme {
 
     }
 
+    /**
+     *
+     * @param colors Colors which the scheme is comprised of
+     * @return ColorScheme object based on the possible schemes found
+     */
     public static ColorScheme findScheme(ArrayList<HSLColor> colors){
         HSLColor c1, c2;
         ArrayList<String> schemes = new ArrayList<String>();

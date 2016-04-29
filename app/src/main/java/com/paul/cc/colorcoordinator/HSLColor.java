@@ -3,6 +3,16 @@ package com.paul.cc.colorcoordinator;
 import android.graphics.Color;
 
 /**
+ * Code obtained from tips4java.wordpress.com, written by Rob Camick
+ *
+ * "We assume no responsibility for the code. You are free to use and/or
+ * modify and/or distribute any or all code posted
+ * on the Java Tips Weblog without restriction. A credit in the code
+ * comments would be nice, but not in any way mandatory."
+ */
+
+
+/**
  *  The HSLColor class provides methods to manipulate HSL (Hue, Saturation
  *  Luminance) values to create a corresponding Color object using the RGB
  *  ColorSpace.
@@ -192,7 +202,7 @@ public class HSLColor
     {
         //  Get RYB values in the range 0 - 1
 
-        double[] ryb = rgb2ryb(color);
+        double[] ryb = rgb2ryb(color); //this is to get color wheel with green as 180, not cyan.
         float r = (float) ryb[0];
         float y = (float) ryb[1];
         float b = (float) ryb[2];
@@ -216,7 +226,7 @@ public class HSLColor
             h = (60 * (r - y) / (max - min)) + 240;
 
         //  Calculate the Luminance
-
+        // In ryb, luminance is reversed
         float l = (max + min) / 2;
 
         //  Calculate the Saturation
@@ -334,7 +344,7 @@ public class HSLColor
 
         double[] ryb = {(double)r,(double)y,(double)b};
 
-        return ryb2rgb(ryb,alpha);
+        return ryb2rgb(ryb,alpha);// must convert back from ryb to rgb colorspace
     }
 
     private static float HueToRGB(float p, float q, float h)
@@ -361,6 +371,7 @@ public class HSLColor
         return p;
     }
 
+    // Convert back from RYB to RGB color representation
     private static int ryb2rgb(double[] ryb, float alpha){
 
         double R = (double) ryb[0];
@@ -389,7 +400,8 @@ public class HSLColor
         int ret = Color.argb((int) alpha * 255, (int) newR * 255, (int) newG * 255, (int) newB * 255);
         return ret;
     }
-
+    //Code to convert an RGB color to RYB color. Useful for color matching, as a designer's color
+    // wheel expects red to be 0 and green to be 180. RGB color wheel leads to cyan as 180.
     private static double[] rgb2ryb(int color){
 
         double R = (double) Color.red(color)/255.0;
@@ -418,7 +430,7 @@ public class HSLColor
         double[] ret = {newR,newY,newB};
         return ret;
     }
-
+    //Experimental color naming with HSL in the RYB mode
     public static String printColor(HSLColor c){
         int s = (int) c.getSaturation();
         int l = (int) c.getLuminance();

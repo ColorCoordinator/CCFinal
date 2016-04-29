@@ -41,19 +41,21 @@ public class OutfitActivity extends AppCompatActivity {
     private Uri fileUri;
     private File imageFile;
     private ClothingArrayAdapter adapter;
-    ArrayList<clothingItem> stuff;
-    private SharedPreferences stuffPref;
-    private int stuffInt;
+    ArrayList<clothingItem> clothingItems;
+    private SharedPreferences clothingItemPref;
+    private int clothingItemInt;
     private int itemCount;
     private Outfit outfit;
     private int matchRating;
+    private int matchThreshold;
     SharedPreferences matchRatingPrefs;
+    SharedPreferences matchThreshPref;
 /*
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-            stuff=savedInstanceState.getParcelableArrayList("clothingList");
+            clothingItems=savedInstanceState.getParcelableArrayList("clothingList");
             itemCount=savedInstanceState.getInt("itmCount");
 
     }*/
@@ -73,33 +75,16 @@ public class OutfitActivity extends AppCompatActivity {
 
         imagePrefs = getSharedPreferences("labelImageNum", 0);
         imageNumber  = imagePrefs.getInt("imageNumCount", 0); //the 0 is the default value if nothing found
-        //Toast.makeText(this, imageNumber + "hey", Toast.LENGTH_SHORT).show();
 
-
-
-        if(savedInstanceState!=null){
-
-            //stuff=savedInstanceState.getParcelableArrayList("clothingList");
-           // itemCount=savedInstanceState.getInt("itmCount");
-            //Toast.makeText(OutfitActivity.this, "true " + itemCount, Toast.LENGTH_SHORT).show();
-        }
-        else{
-
-            //stuff = new ArrayList<clothingItem>();
-            //itemCount=1;
-            //Toast.makeText(OutfitActivity.this, "added " + itemCount, Toast.LENGTH_SHORT).show();
-        }
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        //SharedPreferences.Editor mEditor = stuffPref.edit();
         try {
-            //Toast.makeText(OutfitActivity.this, prefs.getString("please",""), Toast.LENGTH_SHORT).show();
-            String holdStuff = prefs.getString("please","");
-            if(holdStuff.equals("")){
-                stuff = new ArrayList<clothingItem>();
+            String holdClothingItems = prefs.getString("please","");
+            if(holdClothingItems.equals("")){
+                clothingItems = new ArrayList<clothingItem>();
             }
             else{
-                stuff = (ArrayList<clothingItem>)fromString(holdStuff);
+                clothingItems = (ArrayList<clothingItem>)fromString(holdClothingItems);
             }
 
 
@@ -111,7 +96,7 @@ public class OutfitActivity extends AppCompatActivity {
         JSONStringer ji = new JSONStringer();
 
 
-        adapter = new ClothingArrayAdapter(this, stuff);
+        adapter = new ClothingArrayAdapter(this, clothingItems);
         ListView listView  = (ListView) findViewById(R.id.listView);
         //listView.setChoiceMode(listView.CHOICE_MODE_MULTIPLE);
         listView.setAdapter(adapter);
@@ -120,14 +105,6 @@ public class OutfitActivity extends AppCompatActivity {
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // create Intent to take a picture and return control to the calling application
-                /*Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-                fileUri = getOutputMediaFileUri(); // create a file to save the image
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
-
-                // start the image capture Intent
-                startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-                */
 
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
@@ -145,16 +122,12 @@ public class OutfitActivity extends AppCompatActivity {
         Button buttonDelete = (Button) findViewById(R.id.btnDelete);
         buttonDelete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                stuff.clear();
+                clothingItems.clear();
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 SharedPreferences.Editor mEditor = prefs.edit();
-                //mEditor.putInt("imageNumCount", 0).commit();
-                //SharedPreferences.Editor editor = prefs.edit();
-                // Gson gson = new Gson();
                 try {
                     mEditor.putString("please","");
                     mEditor.commit();
-                    //Toast.makeText(OutfitActivity.this, test, Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -171,8 +144,11 @@ public class OutfitActivity extends AppCompatActivity {
 
             }
         });
+        matchThreshPref = getSharedPreferences("labelMatchThreshold", 0);
+        matchThreshold = matchThreshPref.getInt("matchThresh", 100);
         matchRatingPrefs = getSharedPreferences("labelMatchRating", 0);
-        matchRating  = imagePrefs.getInt("matchNum", 100);
+        matchRating  = imagePrefs.getInt("matchNum", 100) + 100 - matchThreshold;
+        if(matchRating > 100){matchRating=100;}
         TextView textView = (TextView) findViewById(R.id.matchRating);
         textView.setText(String.valueOf("Match Rating: " + matchRating));
 
@@ -184,39 +160,13 @@ public class OutfitActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         outfit = new Outfit();
-                        for(clothingItem cloth : stuff){
+                        for(clothingItem cloth : clothingItems){
                             addClothing(cloth.filepath);
                         }
                     }
                 });
                 }
         }).start();
-
-    /*
-        clothingItem it1 = new clothingItem();
-        it1.description= "Ben";
-
-        clothingItem it2 = new clothingItem();
-        it2.description= "Roll Tide";
-        it1.filepath="";*/
-        //adapter.add(it1);
-       /* adapter.add(it2);
-        adapter.add(it2);
-        adapter.add(it2);
-        adapter.add(it2);
-        adapter.add(it1);
-        adapter.add(it1);
-        adapter.add(it2);
-        adapter.add(it2);
-        adapter.add(it2);
-        adapter.add(it2);
-        adapter.add(it1);
-        adapter.add(it1);
-        adapter.add(it2);
-        adapter.add(it2);
-        adapter.add(it2);
-        adapter.add(it2);
-        adapter.add(it1);*/
 
     }
     /* Set object to Base64 String */
@@ -242,16 +192,10 @@ public class OutfitActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        //SharedPreferences.Editor mEditor = stuffPref.edit();
-        //mEditor.putArray("imageNumCount", stuff).commit();
-        //save the task list to preference
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor mEditor = prefs.edit();
-        //mEditor.putInt("imageNumCount", 0).commit();
-        //SharedPreferences.Editor editor = prefs.edit();
-       // Gson gson = new Gson();
         try {
-            String test = toString(stuff);
+            String test = toString(clothingItems);
             mEditor.putString("please",test);
             mEditor.commit();
             //Toast.makeText(OutfitActivity.this, test, Toast.LENGTH_SHORT).show();
@@ -276,25 +220,7 @@ public class OutfitActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        /*File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                , "CCTestDIR");*/
-        // This location works best if you want the created images to be shared
-        // between applications and persist after your app has been uninstalled.
 
-        // Create the storage directory if it does not exist
-        /*if (! mediaStorageDir.exists()){
-            if (! mediaStorageDir.mkdirs()){
-                Log.d("CCTestDIR", "failed to create directory");
-                return null;
-            }
-        }*/
-
-        // Create a media file name
-       /* String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        File mediaFile;
-
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    "TEST_"+ timeStamp + ".jpg");*/
 
         return file;
     }
@@ -334,7 +260,7 @@ public class OutfitActivity extends AppCompatActivity {
 
         // savedInstanceState.putInt(STATE_SCORE, mCurrentScore);
         //savedInstanceState.putInt(STATE_LEVEL, mCurrentLevel);
-        //savedInstanceState.putParcelableArrayList("clothingList", stuff);
+        //savedInstanceState.putParcelableArrayList("clothingList", clothingItems);
         savedInstanceState.putInt("itmCount", itemCount);
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
@@ -360,7 +286,8 @@ public class OutfitActivity extends AppCompatActivity {
 
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
         outfit.addClothing(bitmap);
-        matchRating = outfit.findMatchRating();
+        matchRating = outfit.findMatchRating() + 100 - matchThreshold;
+        if(matchRating > 100){matchRating=100;}
         SharedPreferences.Editor mEditor = matchRatingPrefs.edit();
         mEditor.putInt("matchNum", matchRating).commit();
         Log.v("MATCHRATING!!!!!", String.valueOf(matchRating));
@@ -368,54 +295,6 @@ public class OutfitActivity extends AppCompatActivity {
         textView.setText(String.valueOf("Match Rating: " + matchRating));
 
     }
-/*
-    public void removeClothing(){
-
-    }
-    public void addClothing(View view){
-
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        imageFile=new File(getExternalFilesDir(null),
-                "colorWilly3.jpg");
-
-        Uri tempuri = Uri.fromFile(imageFile);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, tempuri);
-        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-        startActivityForResult(intent, 0);
-
-    }
-
-    //sets image to the image id location
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // TODO Auto-generated method stub
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==0){
-            Log.d("ColorCoordinator", "THIS WORK?");
-            switch(resultCode){
-                case Activity.RESULT_OK:
-                    if(imageFile.exists()){
-                        Toast.makeText(this, "File saved at "+imageFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
-                        imageNumber++;
-                        SharedPreferences.Editor mEditor = imagePrefs.edit();
-                        mEditor.putInt("imageNumCount", imageNumber).commit();//maybe use apply() not commit
-                        //Toast.makeText(this, imageNumber + " hey", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-                        Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show();
-                    }
-                    break;
-                case Activity.RESULT_CANCELED:
-                    break;
-                default:
-                    break;
-            }
-        }
-        if(requestCode==1){
-
-        }
-    }
-*/
     public void goBackToMain(View v) {
         Intent backToMain = new Intent(v.getContext(), MainActivity.class);
         startActivityForResult(backToMain, 0);

@@ -24,6 +24,9 @@ public class Outfit {
 
     }
 
+    /**
+     * Updates all flags based on matching flags in clothing objects
+     */
     public void updateFlags(){
         black = false;
         brown = false;
@@ -39,13 +42,12 @@ public class Outfit {
         }
     }
 
+    //Repopulates colors array with primary hues of clothing
     private void refreshColors(){
         for(Clothing cl : clothes){
             cl.findPrimaryHues();
-            ArrayList<HSLColor> hues = cl.getPrimaryHues();
-            for(HSLColor c: hues){
-                colors.add(c);
-            }
+            ArrayList<HSLColor> cs = cl.getPrimaryHues();
+            for(HSLColor c: cs) colors.add(c);
         }
         findPrimaryHues();
     }
@@ -66,7 +68,13 @@ public class Outfit {
         for(HSLColor color : colors){
             boolean add = true;
             for(HSLColor c : primaryHues){
-					/*if(color.getLuminance()<= 10){
+                    /*if(color.getLuminance()>= 75 && 10 < color.getHue() && color.getHue() < 50){
+                        brown = true;
+                    }
+                    else if(color.getLuminance() >=75 && 220 < color.getHue() && color.getHue() < 255){
+                        navy = true;
+                    }
+					if(color.getLuminance()<= 10){
 						add=false;
 						white = true;
 						break;
@@ -96,6 +104,11 @@ public class Outfit {
         }
     }
 
+    /**
+     * findMatchRating attempts to quantify how well an outfit matches by guessing its scheme and seeing how close
+     * the outfit is to the perfect version of that scheme
+     * @return
+     */
     public int findMatchRating(){
         updateFlags();
         //Get rid of duplicates
@@ -103,6 +116,7 @@ public class Outfit {
         hs.addAll(colors);
         colors.clear();
         colors.addAll(hs);
+
         scheme = ColorScheme.findScheme(primaryHues);
         schemeName = scheme.getName();
         int base = 180;
@@ -139,13 +153,21 @@ public class Outfit {
         else{
             for(int i = 0; i < colors.size()-1; i++){
                 int deg = (int) colors.get(i).getDegreesBetween(colors.get(i+1));
-                if(deg < 15){break;}
+                if(deg < 15){continue;}
                 score -= Math.abs(base - deg);
             }
         }
 
         if(black & navy){score -= 50;}
         if(black & brown){score -= 50;}
+        boolean flag = false;
+        for(Clothing c : clothes){
+            if(c.pattern){
+                if(flag){
+                    score -= 50;
+                }
+                flag = true;
+            }}
         if(score < 0){score = 0;}
         matchRating = score;
         return matchRating;

@@ -7,6 +7,11 @@ import android.graphics.Color;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * ColorFinder class uses K-means clustering to identify the colors of an image when given a bitmap
+ */
+
+
 public class ColorFinder {
 
     public int k = 8;
@@ -47,6 +52,12 @@ public class ColorFinder {
                 }
             }
         }*/
+
+    /**
+     *
+     * @param bmap Image bitmap to extract colors from
+     * @param k Number of random samples, or final number of colors expected
+     */
     public ColorFinder(Bitmap bmap, int k){
 
 
@@ -54,7 +65,7 @@ public class ColorFinder {
         imageBitmap = bmap;
         this.k = k;
 
-        //Image smallImg = image.getScaledInstance(200, 200, java.awt.Image.SCALE_DEFAULT);
+        //Extracting pixels and creating 3D points from RGB values
         for (int y=0; y<imageBitmap.getHeight(); y++){
             for(int x=0; x<imageBitmap.getWidth(); x++){
                 int rgb = imageBitmap.getPixel(x, y);
@@ -64,6 +75,8 @@ public class ColorFinder {
                 allPoints.add(new Point(r,g,b));
             }
         }
+
+        //Initializing k clusters with random points
         for(int i = 0; i < k; i++){
             Random random = new Random();
             clusters.add(new Cluster(allPoints.get(random.nextInt(allPoints.size()))));
@@ -72,6 +85,7 @@ public class ColorFinder {
         run();
     }
 
+    //Actually running th k-means algorithm
     public void run(){
         boolean flag = true;
         int iters = 0;

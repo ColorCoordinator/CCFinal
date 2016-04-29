@@ -32,7 +32,7 @@ public class OptionsActivity extends Activity{
         setContentView(R.layout.activity_options);
 
         matchThreshPref = getSharedPreferences("labelMatchThreshold", 0);
-        matchThreshold = matchThreshPref.getInt("imageNumCount", 0); //the 0 is the default value if nothing found
+        matchThreshold = matchThreshPref.getInt("matchThresh", 100); //the 0 is the default value if nothing found
 
         TextView view = (TextView) findViewById(R.id.txtMatchThreshold);
         view.setText("Match Threshold: " + matchThreshold);
@@ -46,7 +46,7 @@ public class OptionsActivity extends Activity{
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
                         SharedPreferences.Editor mEditor = matchThreshPref.edit();
-                        mEditor.putInt("imageNumCount", matchThreshold).commit();//maybe use apply() not commit
+                        mEditor.putInt("matchThresh", matchThreshold).commit();//maybe use apply() not commit
                         TextView view = (TextView) findViewById(R.id.txtMatchThreshold);
                         view.setText("Match Threshold: " + matchThreshold);
                         //Toast.makeText(OptionsActivity.this, matchThreshold + " is the Match Thres", Toast.LENGTH_LONG).show();

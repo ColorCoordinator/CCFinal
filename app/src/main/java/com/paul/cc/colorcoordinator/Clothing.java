@@ -4,6 +4,10 @@ import android.graphics.Bitmap;
 
 import java.util.ArrayList;
 
+/**
+ * Clothing represents one article of clothing by finding all of its comprising colors, the primary
+ * hues in the clothing, and any scheme that might be present
+ */
 public class Clothing {
 
     boolean pattern;
@@ -17,9 +21,12 @@ public class Clothing {
         colors = c;
         pattern = false;
         findPrimaryHues();
-        pattern = true;
     }
 
+    /**
+     * Create clothing object from image
+     * @param img
+     */
     public Clothing(Bitmap img){
         int k = 10;
         boolean flag = true;
@@ -65,6 +72,11 @@ public class Clothing {
         return primaryHues;
     }
 
+    /**
+     * Finds the primary hues in a clothing object by throwing out colors with similar hue
+     * Also sets flags for colors on the ends of the saturation and lightness spectrums, as these could
+     * imply hues that arent really present
+     */
     public void findPrimaryHues(){
         for(HSLColor color : colors){
             boolean add = true;
@@ -74,12 +86,12 @@ public class Clothing {
             else if(color.getLuminance() >=75 && 220 < color.getHue() && color.getHue() < 255){
                 navy = true;
             }
-            if(color.getLuminance()<= 20){
+            if(color.getLuminance()<= 10){
                 add=false;
                 white = true;
                 continue;
             }
-            else if(color.getLuminance() >= 80){
+            else if(color.getLuminance() >= 90){
                 add=false;
                 black=true;
                 continue;
@@ -103,6 +115,11 @@ public class Clothing {
                 add = true;
             }
         }
+        int numcolors = primaryHues.size();
+        if(black) numcolors++;
+        if(white) numcolors++;
+        if(gray) numcolors++;
+        if(numcolors > 2){pattern = true;}
     }
 
     public void findScheme(){

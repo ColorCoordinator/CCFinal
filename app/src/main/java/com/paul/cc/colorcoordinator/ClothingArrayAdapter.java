@@ -34,8 +34,6 @@ public class ClothingArrayAdapter extends ArrayAdapter<clothingItem> {
         TextView descLabel = (TextView) convertView.findViewById(R.id.label);
         ImageView image = (ImageView)  convertView.findViewById(R.id.clothing_pic);
         descLabel.setText(item.description);
-        //image.setImageResource(R.mipmap.ic_launcher);
-        //File imgFile = new File(item.filepath);
 
         if(!(item.filepath.equals("")) && item!=null){
 
@@ -90,25 +88,4 @@ class clothingItem implements Serializable {
         filepath =in.readString();
     }
 
-  /*  @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(description);
-        dest.writeString(filepath);
-    }
-
-    public  final Parcelable.Creator<clothingItem> CREATOR = new Parcelable.Creator<clothingItem>() {
-        public clothingItem createFromParcel(Parcel in) {
-            return new clothingItem(in);
-        }
-
-        @Override
-        public clothingItem[] newArray(int size) {
-            return new clothingItem[size];
-        }
-    };*/
 }
